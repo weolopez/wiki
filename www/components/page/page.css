@@ -1,0 +1,52 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jul 23, 2015, 1:47:21 PM
+    Author     : weolopez
+*/
+
+[contenteditable]:focus {
+    margin: 2px;
+    border: black groove thin; 
+}
+.selectedStory {
+    margin: 2px;     
+    border: black groove thin;
+    
+}
+.story {
+    /* margin: 10px; */
+}
+.storyEditHeader {
+    padding-right: 0 0 0 10px;
+}
+.storyEditRadio {
+    padding-right: 10px;
+}
+.storyEditAttributeHeader {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0px;
+    margin: 0px;
+}
+.storyEditAttribute {
+    overflow: hidden;
+    padding: 10px 75px 10px 10px;
+    text-overflow: clip;
+    /* padding: 10px; */
+    /* height: 30px; */
+    /* vertical-align: middle; */
+}
+
+[ng-drag].drag-over {
+    border: solid 1px black;
+}
+[ng-drag].dragging {
+    opacity: 0.7;
+}
+[ng-drop].drag-enter {
+    border: solid 3px black;
+}

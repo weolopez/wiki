@@ -1,0 +1,8 @@
+   "title":"edit",
+    "story": [
+        {
+            "name":"Edit Story",
+            "text":"<div style=\"width: 100%; height: 600px;\"><textarea style=\"width: 100%; height: 100%;\" ng-keyup=\"page.page.save();\" ng-model=\"s.text\"></textarea>\n<script src=\"//tinymce.cachefly.net/4.2/tinymce.min.js\"></script>\n<script>alert(\"TEST\");</script>\n<h1>{{s.name}}</h1>\n</div>",
+            "type": "html"
+        }
+    ]

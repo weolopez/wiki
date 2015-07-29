@@ -1,0 +1,56 @@
+<ion-view view-title="{{page.page.current.title}}">
+<link href="components/page/page.css" rel="stylesheet">  
+<ion-content>
+    <div ng-repeat="s in page.page.current.story track by $index" 
+            class="editable-content "
+            ng-class="{focused:page.isSelected($index)
+                    }"
+            delegate-handle="D{{$index}}"
+            ng-if="s"
+            >
+         
+        <div class="animate-if" ng-if="page.page.edit" >
+        <div class="storyEditHeader item item-input-inset" 
+            ng-drop="true" 
+            ng-drop-success="page.onDropComplete($index, $data, $event)"
+            ng-drag="true" 
+            ng-drag-data="s"
+            on-touch="page.touchedIndex = $index;"
+             >
+              <i ng-class="{ 'storyEditRadio':true,
+                            'ion-ios-circle-filled':page.page.storyIndex===$index, 
+                            'ion-ios-circle-outline':page.page.storyIndex!==$index}"
+                 ng-click="page.page.storyIndex=page.componentClicked(page.page.storyIndex,$index);page.page.save();"                 
+              ></i>
+              <h2 contenteditable 
+                  on-blur="page.page.save();"
+                  ng-model="s.name">
+              </h2>
+        </div>     
+        <div class="storyEditAttributeHeader item item-input-inset animate-if" 
+             ng-if="page.page.storyIndex===$index"
+             >
+            <div ng-repeat="key in page.getStoryKeys() track by $index"
+                 class="storyEditAttribute"
+                 style="color: black;">
+                <i class="icon-left ion-close-circled"   
+                   ng-click="page.deleteKey(s,key);"
+                   ></i>
+                <a ng-click="page.page.key=page.componentClicked(page.page.key,key);"
+                    >{{key}}</a>
+            </div>            
+        </div>   
+        <div class="storyEditAttributeHeader item item-input-inset animate-if" 
+             ng-if="page.page.storyIndex===$index && page.page.key"
+             >
+            <textarea ng-model="s[page.page.key]"
+                      on-touch="$event.stopPropagation();"
+                      on-blur="page.page.save();" 
+                      style="height: 250px"
+                      ></textarea>
+        </div>   
+        </div>    
+	<div class="story animate-if" ng-class="{selectedStory:page.page.storyIndex===$index}" ng-include="'/components/wikihtml/wikihtml.html'"></div>
+    </div>
+</ion-content>
+</ion-view>

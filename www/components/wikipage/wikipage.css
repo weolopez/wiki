@@ -1,0 +1,20 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jul 23, 2015, 1:47:21 PM
+    Author     : weolopez
+*/
+
+[contenteditable]:focus {
+    margin: 2px;
+    border: black groove thin; 
+}
+.storyEditHeader {
+    padding-right: 10px;
+}
+.storyEditRadio {
+    padding-right: 10px;
+}
