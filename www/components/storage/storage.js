@@ -8,7 +8,8 @@ angular.module('storage', ['firebase'])
     storage.key='/wiki/pages';
     storage.firebasesPagesObject=[];
     storage.cache=$cacheFactory('instanceCache');
-    storage.pages=JSON.parse($window.localStorage[storage.key]) || '{}';
+    if ((storage.pages=$window.localStorage[storage.key]) === undefined) storage.pages="{}";
+    storage.pages=JSON.parse(storage.pages);
     storage.cache.put('local',storage.pages);
     
     /**
