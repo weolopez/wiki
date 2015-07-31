@@ -5,9 +5,9 @@ angular.module('component.page', ['storage'])
     
     page.save = function() {
         if (page.current === undefined) return;
-        var pageName={};
-        pageName[page.current.title] = page.current;
-        $storage.setObject('/wiki/pages', pageName[page.current.title]);
+        $storage.setPage(page.current, function(success) {
+            if (!success) alert('Auto Save Failed.');
+        });
     };
     page.updatePage = function(state) {
         $storage.getPage(state.params.name, function(p) {		
@@ -18,7 +18,8 @@ angular.module('component.page', ['storage'])
     page.getDefault = function(name) {
         return {
             title: name,
-            story: [page.getDefaultStory()]
+            story: [page.getDefaultStory()],
+            source: $storage.persistance.sources.local
         }
     };
     page.getDefaultStory = function() {
@@ -27,17 +28,21 @@ angular.module('component.page', ['storage'])
             text: '<div><h1 contenteditable ng-keyup="page.page.save();" ng-model="s.name"></h1><p>Default Content</p></div>'
         }
     }  
+    page.getKeys = function(o) {
+        if (o === undefined) return;
+        return Object.keys(o);
+    };
     return page;
 })
 .controller('PageCtrl', function ($log, $state, $window, $scope, $location, $timeout, $app, $page, $storage ) {        	
     var page = this;
     page.scope = $scope;
     page.page = $page;
+    page.app=$app;
     page.storage = $storage;
     page.location = $location;
 
     $scope.$on( "$stateChangeSuccess", function() { 
-        $app.navBar.title($state.params.name);
         page.page.updatePage($state);
     });     
     page.componentClicked = function(component, index) {
@@ -47,9 +52,6 @@ angular.module('component.page', ['storage'])
             return index;
         }
     }
-    page.getStoryKeys = function() {
-        return Object.keys(page.page.current.story[page.page.storyIndex]);
-    };
     page.addMessage = function(arr, message) {
         arr.push(message);
     };

@@ -1,0 +1,35 @@
+<div ng-init="page.storage.loadPages()">
+
+    <div class="item item-input-inset" title="search" style="border: none;">
+        <label class="item-input-wrapper">
+            <input type="text" 
+                   action
+                   on-return="page.location.path('/app/page/'+searchPageName);"
+                   placeholder="Search"  
+                   ng-model="searchPageName" 
+                   style="width:100%;">
+        </label>
+
+    </div>
+    <div class="storyEditAttributeHeader item item-input-inset" 
+         >
+        <ion-checkbox ng-model="page.storage.persistance.sources[key].loadPages"
+                      ng-repeat="(value, key) in page.getKeys(page.storage.persistance.sources)"
+                      class="site-list"
+                      style="background-color: {{page.storage.persistance.sources[key].color}}">
+            {{page.storage.persistance.sources[key].name}}
+        </ion-checkbox>
+    </div>
+    <div>
+        <div class="list card" >
+            <a class="item item-icon-left"
+               href="#/app/page/{{value.title}}"
+               ng-repeat="(name, value) in page.storage.persistance.pages | filter:searchPageName"
+               ng-class=""
+               >
+                <i class="icon ion-document"></i>
+                <h2>{{value.title}}</h2>
+            </a>
+        </div>
+    </div>
+</div>

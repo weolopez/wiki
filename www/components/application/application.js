@@ -9,13 +9,14 @@ angular.module('component.application', ['storage'])
     app.navBar = $ionicNavBarDelegate;
     return app;
 })
-.controller('AppCtrl', function ($log, $storage, $app, $page, $state, $window, $ionicActionSheet, $scope, $ionicPopup, $location, $timeout ) {        	
+.controller('AppCtrl', function ($log, $storage, $app, $page,  $window, $ionicActionSheet, $scope) {        	
     var app = this;
     $app.scope = $scope;
+    app.page=$page;
     app.wide = ($window.innerWidth >735);
 
     // Triggered on a button click, or some other target
-    app.open = function() {
+    $app.open = function() {
         if ($page.edit !== true) {
             $page.edit = true;
             return;
@@ -31,8 +32,10 @@ angular.module('component.application', ['storage'])
         ];
 
         if ($page.storyIndex>-1) {
-            var pasteObject = JSON.parse($window.localStorage['copy']);
+            var pasteObject = $window.localStorage['copy'];
+                    
             if (pasteObject) {
+                pasteObject=JSON.parse(pasteObject);
                 lButtons.push(
                     {text: '<b>Paste</b> ' + pasteObject.name,
                         action: function () {
@@ -51,19 +54,31 @@ angular.module('component.application', ['storage'])
                     $storage.setObject('copy',$page.current.story[$page.storyIndex]);
                 }
             });
-        } 
+        }
+        
+        angular.forEach(Object.keys($storage.persistance.sources), function(sourceName, key){
+            lButtons.push({   
+                text: '<b>Save to '+sourceName+'</b> ',
+                action: function() {
+                        $storage.setPageToSource($page.current,function(success) {
+                            if (!success) alert('SAVE FAILED!!!');
+                        }, sourceName);
+                    }
+            });
+        });
        var hideSheet = $ionicActionSheet.show({
          buttons: lButtons,
          destructiveText: destructText,
          titleText: titleText,
-         cancelText: 'Save Page',
+         cancelText: 'Cancel',
          cancel: function() {
-             $page.save();
-             $page.storyIndex=undefined;
-             $page.edit = false;
+           $page.storyIndex=undefined;
+           $page.edit = false;
          },
          buttonClicked: function(index, button) {
            if (button.action !== undefined) button.action();
+           $page.storyIndex=undefined;
+           $page.edit = false;
            return true;
          },
          destructiveButtonClicked: function() {

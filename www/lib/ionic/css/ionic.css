@@ -2263,7 +2263,7 @@
  * http://cssreset.com
  */
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, i, u, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, fieldset, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
-  margin: 0;
+  margin: 0px;
   padding: 0;
   border: 0;
   vertical-align: baseline;
@@ -3228,7 +3228,7 @@ a.subdued {
   .bar .buttons span {
     display: inline-block; }
   .bar .buttons-left span {
-    margin-right: 5px;
+    margin-right: 3px;
     display: inherit; }
   .bar .buttons-right span {
     margin-left: 5px;
@@ -5739,7 +5739,7 @@ input, button, select, textarea {
   align-items: center;
   position: relative;
   overflow: hidden;
-  padding: 10.66667px; }
+  padding: 4.66667px; }
 
 .item-input-wrapper {
   display: -webkit-box;
@@ -6039,7 +6039,11 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
   opacity: 1; }
 
 .item-checkbox {
-  padding-left: 60px; }
+  padding-left: 48px; 
+  /* padding-right: 109px; */
+  height: 42px;
+  width: 120px;
+}
   .item-checkbox.active {
     box-shadow: none; }
 

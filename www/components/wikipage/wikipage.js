@@ -10,10 +10,11 @@ angular.module('component.wikipage', [])
             var page = this;
             page.page = $page;
             page.location = $location;
-            $storage.getPage(page.pagename, function(p) {		
-            if (!p) p = page.getDefault(page.pagename);
-            page.current=p;
-        });
+            page.storage=$storage;
+            $storage.getPageFromSource(page.pagename, function(p) {		
+                if (!p) p = $page.getDefault(page.pagename);
+                page.current=p;
+            },'root');
         },
         controllerAs: 'page', 
         bindToController: true
