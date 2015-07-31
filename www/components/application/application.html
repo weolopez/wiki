@@ -1,16 +1,22 @@
 <ion-side-menus enable-menu-with-back-views="true">
     <ion-side-menu-content>
         <ion-nav-bar class="bar-stable">
-            <ion-nav-title><span>{{app.page.current.title}}</span></ion-nav-title>
+            <ion-nav-title>
+                <span style="   text-decoration: underline;
+                                text-decoration-color: {{app.page.current.source.color}};"
+                    >
+                    {{app.page.current.title}}
+                </span>
+            </ion-nav-title>
             <ion-nav-back-button>
             </ion-nav-back-button>
-            <!--ion-nav-buttons side="left">
-                <button class="btn ion-share" 
-                        ng-click="app.open()"
-                        style="color: {{app.page.current.source.color}};"
-                        >
-                </button>
-            </ion-nav-buttons-->
+            <ion-nav-buttons side="left">
+                <!--button class="btn" 
+                     ng-click= "app.page.setSource(key);"
+                     style="background-color: {{app.page.current.source.color}} !important"
+                     ng-class="{'active':app.page.edit"
+        >{{app.page.current.source.name}}</button-->       
+            </ion-nav-buttons>
             <ion-nav-buttons side="right">
                 <button class="button button-icon button-clear ion-navicon" menu-toggle="right">
                 </button>

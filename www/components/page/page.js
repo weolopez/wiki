@@ -2,7 +2,9 @@ angular.module('component.page', ['storage'])
 .factory('$page', function ($log, $storage) {
     var page = this;
     page.pages=$storage.pages;
-    
+    page.setSource = function(key) {
+        if ($storage.cachedPages[key] !== undefined) page.current=$storage.cachedPages[key];
+    }
     page.save = function() {
         if (page.current === undefined) return;
         $storage.setPage(page.current, function(success) {

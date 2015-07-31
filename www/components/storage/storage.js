@@ -92,6 +92,7 @@ angular.module('storage', ['firebase'])
         })
     };
     persistance.types.firebase.set = function(page, source, callback) {
+        console.dir(page);
         if (page.$save !== undefined) {
             page.$save();
         }
@@ -134,6 +135,7 @@ angular.module('storage', ['firebase'])
     var storage = this;
     storage.persistance=persistance;
     storage.pages=[];
+    storage.cachedPages={};
     storage.preferedSources='root';
     storage.init = function() {
         angular.forEach(storage.getSourceList(), function(sourceName, key){
@@ -184,12 +186,13 @@ angular.module('storage', ['firebase'])
         });
     }
     storage.getPage = function (pageName, callback) {
-        var pages={};
+        storage.cachedPages={};
         var sourceList = Object.keys(persistance.sources);
         storage.getPageFromSources(pageName, function(p) {
             if (p === undefined) return;
-            pages[p.source.name]=p;
-            if (p.source.name === storage.preferedSources) callback(pages[storage.preferedSources]);
+            storage.cachedPages[p.source.name]=p;
+            if (p.source.name === storage.preferedSources) 
+                 callback(storage.cachedPages[storage.preferedSources]);
         }, sourceList);
     }
     storage.addToSourceList = function(source) {
@@ -221,4 +224,4 @@ angular.module('storage', ['firebase'])
   //  storage.init();
     return storage;
 })
-;
+; 
