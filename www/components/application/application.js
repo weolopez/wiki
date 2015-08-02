@@ -31,27 +31,27 @@ angular.module('component.application', ['storage'])
             }
         ];
 
-        if ($page.storyIndex>-1) {
             var pasteObject = $window.localStorage['copy'];
                     
             if (pasteObject) {
-                pasteObject=JSON.parse(pasteObject);
+                pasteObject=$storage.paste();
                 lButtons.push(
                     {text: '<b>Paste</b> ' + pasteObject.name,
                         action: function () {
                             $page.current.story.push(pasteObject);
-                            $page.save();
+                            $storage.setPage($page.current);
                         }
                     }
                 );
             }
 
+        if ($page.storyIndex>-1) {
             var destructText='Delete';
             titleText=titleText+' Story: '+$page.current.story[$page.storyIndex].name;
             lButtons.push({ 
                 text: '<b>Copy</b> ',
                 action: function() {
-                    $storage.setObject('copy',$page.current.story[$page.storyIndex]);
+                    $storage.copy($page.current.story[$page.storyIndex]);
                 }
             });
         }
@@ -60,9 +60,8 @@ angular.module('component.application', ['storage'])
             lButtons.push({   
                 text: '<b>Save to '+sourceName+'</b> ',
                 action: function() {
-                        $storage.setPageToSource($page.current,function(success) {
-                            if (!success) alert('SAVE FAILED!!!');
-                        }, sourceName);
+                        $page.current.source=$storage.persistance.sources[sourceName];
+                        $storage.setPage($page.current);
                     }
             });
         });

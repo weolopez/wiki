@@ -56,15 +56,27 @@ angular.module('storage', ['firebase'])
             return true;
         }
     };    
-    persistance.types.local.set = function(page, source, callback) {        
-        var updatedObject
-        angular.forEach(Object.keys(page), function(value, key) {
-            if (value.charAt(0)==='$') delete page[value];
-        });
+    persistance.types.local.set = function(page, source, callback) {   
+        
+        
+
+        var updatedObject={};
         if ($window.localStorage[source.path]===undefined) updatedObject={};
         else updatedObject = JSON.parse($window.localStorage[source.path]);
         updatedObject[page.title] = page;
-        $window.localStorage[source.path]=JSON.stringify(updatedObject);
+        
+        var cache = [];
+        $window.localStorage[source.path]=JSON.stringify(updatedObject, function(key, value) {
+            if (typeof value === 'object' && value !== null) {
+                if (cache.indexOf(value) !== -1) {
+                    // Circular reference found, discard key
+                    return;
+                }
+                cache.push(value);
+            }
+            return value;
+        });cache=null;
+        
         callback(true);
         return true;
     };    
@@ -85,27 +97,27 @@ angular.module('storage', ['firebase'])
         $firebaseObject(new Firebase(source.src+source.path+'/'+pageName)).$loaded(function(page) {
             if (page.title !== undefined) {
                 page.source = source;
-                persistance.types.local.set(page, persistance.sources.local, function(result){})
+                //persistance.types.local.set(page, persistance.sources.local, function(result){})
                 callback(page);
             return true;
             }
         })
     };
     persistance.types.firebase.set = function(page, source, callback) {
-        console.dir(page);
+     /*   console.dir(page);
         if (page.$save !== undefined) {
             page.$save();
         }
         else {
-            $firebaseObject(new Firebase(source.src+source.path+'/'+page.title)).$loaded(function(remotePage) {
+        */    
+       $firebaseObject(new Firebase(source.src+source.path+'/'+page.title)).$loaded(function(remotePage) {
                     for(var k in page) remotePage[k]=page[k];
                     remotePage.$save();
                     callback(true);
                     return true;
             });
-        }
-        callback(true);
-        return true;
+       // }
+        return false;
     };
     persistance.types.site={};
     persistance.types.site.getPages = function(source, callback) {
@@ -138,35 +150,35 @@ angular.module('storage', ['firebase'])
     storage.cachedPages={};
     storage.preferedSources='root';
     storage.init = function() {
-        angular.forEach(storage.getSourceList(), function(sourceName, key){
-            storage.getPageFromSource('persistance', function(p) {
-                if ( (p !== undefined) && (p.story[0].list !== undefined) ){
-                    for(var k in p.story[0].list) storage.persistance.sources.list[k]=p.story[0].list[k];
-                }
-            }, sourceName);
-        });
-    }
-    
+    };
+    storage.copy= function(updatedObject){
+        $window.localStorage['copy']=JSON.stringify(updatedObject);
+    };
+    storage.paste = function(){
+        return JSON.parse($window.localStorage['copy']);
+    };
     /**
      * saves Object to local storage
      * @param {type} key
      * @param {type} value
      * @returns {undefined}
      */    
-    storage.setPageToSource = function (page, callback, persistanceName) {
-        var source = persistance.sources[persistanceName];
+    storage.setPage = function (p) {
+        //cleanPage: 'remove all $'  TODO make configurable fixed Page Attributes
+        var page = {
+                title:p.title,
+                story:p.story,
+                source:p.source
+        }
+       
+        var source = persistance.sources[page.source.name];
         persistance.types[source.type].set(page, source, function(result) {
-            if (result) {
-                page.source=source;
-            }
-            callback(result);
+            if (!result) {
+                page.source=persistance.sources.local;
+                storage.setPage(page);
+            };
+            page.source=source;
         });
-    }
-    storage.setPage = function (page, callback) {        
-        storage.setPageToSource(page, function(result) {
-            if (!result) storage.setPageToSource(page,callback,'local');
-            else callback(result);
-        }, page.source.name);
     }
     
     /**
@@ -175,29 +187,21 @@ angular.module('storage', ['firebase'])
      * @param {function} callback
      * @returns {Page}
      */
-    storage.getPageFromSource = function (pageName, callback, persistanceName) {
-        var source = persistance.sources[persistanceName];
-        persistance.types[source.type].get(pageName, source, callback);
+    storage.getPageFromSource = function (pageName, persistanceName) {
+        return storage.cachedPages[persistanceName];
     }
-    storage.getPageFromSources = function (pageName, callback, sources) {
-        angular.forEach(sources, function(sourceName, key){
+    storage.getPage = function (pageName) {
+        angular.forEach(Object.keys(persistance.sources), function(sourceName, key){
             var source = persistance.sources[sourceName];
-            persistance.types[source.type].get(pageName, source, callback);
+            persistance.types[source.type].get(pageName, source, function(p) {
+                if (p === undefined) return;
+                storage.cachedPages[p.source.name]=p;
+            });
         });
-    }
-    storage.getPage = function (pageName, callback) {
-        storage.cachedPages={};
-        var sourceList = Object.keys(persistance.sources);
-        storage.getPageFromSources(pageName, function(p) {
-            if (p === undefined) return;
-            storage.cachedPages[p.source.name]=p;
-            if (p.source.name === storage.preferedSources) 
-                 callback(storage.cachedPages[storage.preferedSources]);
-        }, sourceList);
-    }
+    };
     storage.addToSourceList = function(source) {
         persistance.sources[source.name] = source;
-    }
+    };
     /**
      * storage.loadPages populates storage.pages with structure of...
      * [

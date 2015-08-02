@@ -2,20 +2,19 @@ angular.module('component.page', ['storage'])
 .factory('$page', function ($log, $storage) {
     var page = this;
     page.pages=$storage.pages;
+    
+    page.init = function() {
+        page.current=page.getDefault();
+    }
     page.setSource = function(key) {
         if ($storage.cachedPages[key] !== undefined) page.current=$storage.cachedPages[key];
     }
     page.save = function() {
         if (page.current === undefined) return;
-        $storage.setPage(page.current, function(success) {
-            if (!success) alert('Auto Save Failed.');
-        });
+        $storage.setPage(page.current);
     };
     page.updatePage = function(state) {
-        $storage.getPage(state.params.name, function(p) {		
-            if (!p) p = page.getDefault(state.params.name);
-            page.current=p;
-        });
+        $storage.getPage(state.params.name);
     };
     page.getDefault = function(name) {
         return {
@@ -34,6 +33,7 @@ angular.module('component.page', ['storage'])
         if (o === undefined) return;
         return Object.keys(o);
     };
+    page.init();
     return page;
 })
 .controller('PageCtrl', function ($log, $state, $window, $scope, $location, $timeout, $app, $page, $storage ) {        	
@@ -44,6 +44,12 @@ angular.module('component.page', ['storage'])
     page.storage = $storage;
     page.location = $location;
 
+    $scope.$watch(function(data) {
+        return $storage.cachedPages[$storage.preferedSources];
+    }, function(newValue, oldValue) {
+        $page.current=newValue;
+    });
+    
     $scope.$on( "$stateChangeSuccess", function() { 
         page.page.updatePage($state);
     });     
