@@ -169,6 +169,7 @@ angular.module('storage', ['firebase'])
                 title:p.title,
                 story:p.story,
                 source:p.source
+                
         }
        
         var source = persistance.sources[page.source.name];

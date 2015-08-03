@@ -6,15 +6,17 @@ angular.module('component.wikipage', [])
                 pagename: '@'
         },
         templateUrl: 'components/wikipage/wikipage.html',
-        controller: function($log, $location, $storage, $page) {        	
+        controller: function($log, $location, $storage, $page, $scope) {        	
             var page = this;
             page.page = $page;
             page.location = $location;
             page.storage=$storage;
-            $storage.getPageFromSource(page.pagename, function(p) {		
-                if (!p) p = $page.getDefault(page.pagename);
-                page.current=p;
-            },'root');
+            
+            $scope.$watch(function(data) {
+                return $storage.cachedPages['root'];
+            }, function(newValue, oldValue) {
+                page.current=newValue;
+            });
         },
         controllerAs: 'page', 
         bindToController: true

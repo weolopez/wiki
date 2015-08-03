@@ -1,5 +1,5 @@
 angular.module('component.page', ['storage'])        
-.factory('$page', function ($log, $storage) {
+.factory('$page', function ($log, $timeout, $storage) {
     var page = this;
     page.pages=$storage.pages;
     
@@ -15,6 +15,9 @@ angular.module('component.page', ['storage'])
     };
     page.updatePage = function(state) {
         $storage.getPage(state.params.name);
+        $timeout(function() {
+            if (page.current===undefined) page.current=page.getDefault();
+        }, 1000);
     };
     page.getDefault = function(name) {
         return {
