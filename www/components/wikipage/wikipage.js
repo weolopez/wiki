@@ -14,7 +14,8 @@ angular.module('component.wikipage', [])
             
             page.storage.getPage('pages');
             $scope.$watch(function(data) {
-                return $storage.cachedPages['root'];
+                if ($storage.cachedPages['root']===undefined)return;
+                return $storage.cachedPages['root']['pages'];
             }, function(newValue, oldValue) {
                 page.current=newValue;
             });

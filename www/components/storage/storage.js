@@ -57,9 +57,6 @@ angular.module('storage', ['firebase'])
         }
     };    
     persistance.types.local.set = function(page, source, callback) {   
-        
-        
-
         var updatedObject={};
         if ($window.localStorage[source.path]===undefined) updatedObject={};
         else updatedObject = JSON.parse($window.localStorage[source.path]);
@@ -189,14 +186,15 @@ angular.module('storage', ['firebase'])
      * @returns {Page}
      */
     storage.getPageFromSource = function (pageName, persistanceName) {
-        return storage.cachedPages[persistanceName];
+        return storage.cachedPages[persistanceName][pageName];
     }
     storage.getPage = function (pageName) {
         angular.forEach(Object.keys(persistance.sources), function(sourceName, key){
             var source = persistance.sources[sourceName];
             persistance.types[source.type].get(pageName, source, function(p) {
                 if (p === undefined) return;
-                storage.cachedPages[p.source.name]=p;
+                if (storage.cachedPages[p.source.name] === undefined) storage.cachedPages[p.source.name]={};
+                storage.cachedPages[p.source.name][p.title]=p;
             });
         });
     };
