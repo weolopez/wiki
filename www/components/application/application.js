@@ -61,7 +61,7 @@ angular.module('component.application', ['storage'])
                 text: '<b>Save to '+sourceName+'</b> ',
                 action: function() {
                         $page.current.source=$storage.persistance.sources[sourceName];
-                        $storage.setPage($page.current);
+                        $page.save();
                     }
             });
         });

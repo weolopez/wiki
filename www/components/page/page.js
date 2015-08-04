@@ -1,5 +1,5 @@
 angular.module('component.page', ['storage'])        
-.factory('$page', function ($log, $timeout, $storage) {
+.factory('$page', function ($log, $timeout, $storage, $state) {
     var page = this;
     page.pages=$storage.pages;
     
@@ -13,22 +13,22 @@ angular.module('component.page', ['storage'])
         if (page.current === undefined) return;
         $storage.setPage(page.current);
     };
-    page.updatePage = function(state) {
-        $storage.getPage(state.params.name);
+    page.updatePage = function() {
+        $storage.getPage($state.params.name);
         $timeout(function() {
             if (page.current===undefined) page.current=page.getDefault();
         }, 1000);
     };
-    page.getDefault = function(name) {
+    page.getDefault = function() {
         return {
-            title: name,
+            title: $state.params.name,
             story: [page.getDefaultStory()],
             source: $storage.persistance.sources.local
         }
     };
     page.getDefaultStory = function() {
         return {
-            name: "New Story",
+            name: "Default Story",
             text: '<div><h1 contenteditable ng-keyup="page.page.save();" ng-model="s.name"></h1><p>Default Content</p></div>'
         }
     }  
@@ -49,8 +49,10 @@ angular.module('component.page', ['storage'])
 
     $scope.$watch(function(data) {
         return $storage.cachedPages[$storage.preferedSources];
-    }, function(newValue, oldValue) {
-        $page.current=newValue;
+    }, function(newValue, oldValue) {    
+        if (newValue===undefined) return;    
+        if ($state.params.name===newValue.title)
+             $page.current=newValue;
     });
     
     $scope.$on( "$stateChangeSuccess", function() { 
