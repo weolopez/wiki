@@ -139,5 +139,8 @@ angular.module('component.page', ['storage'])
                 callback();
           }
     };
+    page.test = function() {
+        alert("TEST SUCCESS");
+    }
 })
 ;
