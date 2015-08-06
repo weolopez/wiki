@@ -23,12 +23,6 @@ angular.module('component.application', ['storage'])
         }
         var titleText='Page:'+$page.current.title;
         var lButtons=[
-            {   text: '<b>Add</b> ',
-                action: function() {
-                    $page.current.story.push($page.getDefaultStory());
-                    $page.save();
-                }
-            }
         ];
 
             var pasteObject = $window.localStorage['copy'];
@@ -55,16 +49,6 @@ angular.module('component.application', ['storage'])
                 }
             });
         }
-        
-        angular.forEach(Object.keys($storage.persistance.sources), function(sourceName, key){
-            lButtons.push({   
-                text: '<b>Save to '+sourceName+'</b> ',
-                action: function() {
-                        $page.current.source=$storage.persistance.sources[sourceName];
-                        $page.save();
-                    }
-            });
-        });
        var hideSheet = $ionicActionSheet.show({
          buttons: lButtons,
          destructiveText: destructText,

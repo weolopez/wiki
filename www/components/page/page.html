@@ -56,7 +56,9 @@
 <textarea style="height: 500px" ng-if="showSource">{{page.page.current}}
         </textarea>
 </ion-content>
-<ion-footer-bar align-title="left" class="bar-footer">
+<ion-footer-bar align-title="left" 
+                class="bar-footer"
+                ng-if="page.page.edit">
   <div class="left-buttons">
     <button class="button" ng-click="showSource=!showSource;">Source</button>
   </div>

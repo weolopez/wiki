@@ -165,11 +165,10 @@ angular.module('storage', ['firebase'])
         var page = {
                 title:p.title,
                 story:p.story,
-                source:p.source
-                
+                header:getHeader(p)
         }
        
-        var source = persistance.sources[page.source.name];
+        var source = persistance.sources[p.source.name];
         persistance.types[source.type].set(page, source, function(result) {
             if (!result) {
                 page.source=persistance.sources.local;
@@ -177,6 +176,14 @@ angular.module('storage', ['firebase'])
             };
             page.source=source;
         });
+    }
+    function getHeader(p) {
+        var header = p.header || {};
+        header.time=Date.now();
+        header.id = header.createTime || header.time;
+        header.origin = header.origin || p.source.name;
+        header.author = header.author || 'MauricioLopez';
+        return header;
     }
     
     /**

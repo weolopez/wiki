@@ -65,17 +65,21 @@ and open the template in the editor.
   
 	  color: black;
   
-	  margin: 2px;
+	  margin: 3px 3px 3px 3px;
   
-	  width: 50px;
+	  width: 39px;
   
-	  height: 50px;
+	  height: 40px;
   position: relative;
-  text-align: center;
   
-	  line-height: 44px;
+	  text-align: center;
+  
+	  padding: 0;
+	  line-height: 38px;
   border-radius: 50%;
-  box-shadow: 0px 3px 8px #aaa, inset 0px 2px 3px #fff;
+  
+	  box-shadow: 0px 3px 8px #aaa, inset 0px 2px 3px #fff;
+	  font-size: 12px;
 }
 .btn.active {
   text-decoration: none;

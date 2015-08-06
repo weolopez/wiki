@@ -11,15 +11,16 @@ angular.module('component.page', ['storage'])
         if ( ($storage.cachedPages[key] !== undefined) &&
              ($storage.cachedPages[key][$state.params.name] !== undefined) )  
                 page.current=$storage.cachedPages[key][$state.params.name];
+        else  
+            page.current=page.getDefault();
     }
     page.save = function() {
-        if (page.current === undefined) return;
         $storage.setPage(page.current);
     };
     page.updatePage = function() {
         $storage.getPage($state.params.name);
         $timeout(function() {
-            if (page.current===undefined) page.current=page.getDefault();
+            if (page.current.title !== $state.params.name) page.current=page.getDefault();
         }, 1000);
     };
     page.getDefault = function() {

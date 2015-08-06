@@ -1,3 +1,74 @@
-"<div ng-init=s.itemName='';>\n<br><br><br><h1 contenteditable ng-keyup=\"page.page.save();\" ng-model=\"s.name\"></h1>\n<p  contenteditable ng-keyup=\"page.page.save();\" ng-model=\"s.paragraph\"></p>\n<div class=\"row responsive-sm list\"\n        ng-if=\"s.itemName!==''\">\n  <label class=\"col item item-input\">\n    <input type=\"text\" placeholder=\"Name\" ng-model=\"s.itemName\" ng-keyup=\"s.list[s.itemName] ? value=s.list[s.itemName] : value='' \">\n  </label>\n  <label class=\"col item item-input\">\n    <input type=\"text\" placeholder=\"Value\" ng-model=\"s.itemValue\" ng-keyup=\"s.list[s.itemName]=value;\">\n  </label>\n</div>\n\n<ion-header-bar align-title=\"left\" class=\"bar-positive\">\n  <div class=\"buttons\">\n    <button class=\"button\" ng-click=\"doSomething()\">Left Button</button>\n  </div>\n  <h1 class=\"title\">Title!</h1>\n  <div class=\"buttons\">\n    <button class=\"button\">Right Button</button>\n  </div>\n</ion-header-bar>\n\n\n<ion-list\n          show-delete=\"false\"\n          show-reorder=\"false\"\n          can-swipe=\"true\">\n  <ion-item ng-repeat=\"(key, value) in s.list\"\n   >\n    <h2>{{key}}</h2>\n    <p>{{value}}</p>\n    <ion-option-button class=\"button-assertive\"\n                       ng-click=\"page.deleteKey(s.list,key); $ionicListDelegate.closeOptionButtons()\">\n      Delete\n    </ion-option-button>\n    <ion-option-button class=\"button-info\"\n                       ng-click=\"s.itemName=key;s.itemValue=value; $ionicListDelegate.closeOptionButtons()\">\n      Edit\n    </ion-option-button>\n    <ion-delete-button class=\"ion-minus-circled\"\n                       ng-click=\"page.deleteKey(s.list, key)\">\n    </ion-delete-button>\n    <ion-reorder-button class=\"ion-navicon\"\n                        on-reorder=\"reorderItem(key, $fromIndx, $toIndex)\">\n    </ion-reorder-button>\n\n  </ion-item>\n</ion-list>\n\n</div>"
+<div ng-init="page.storage.loadPages()">
 
-"<div ng-init=s.itemName='';>\n<br><br><br><h1 contenteditable ng-keyup=\"page.page.save();\" ng-model=\"s.name\"></h1>\n<p  contenteditable ng-keyup=\"page.page.save();\" ng-model=\"s.paragraph\"></p>\n<div class=\"row responsive-sm list\"\n        ng-if=\"s.itemName!==''\">\n  <label class=\"col item item-input\">\n    <input type=\"text\" placeholder=\"Name\" ng-model=\"s.itemName\" ng-keyup=\"s.list[s.itemName] ? value=s.list[s.itemName] : value='' \">\n  </label>\n  <label class=\"col item item-input\">\n    <input type=\"text\" placeholder=\"Value\" ng-model=\"s.itemValue\" ng-keyup=\"s.list[s.itemName]=value;\">\n  </label>\n</div>\n\n\n<ion-list\n          show-delete=\"false\"\n          show-reorder=\"false\"\n          can-swipe=\"true\">\n  <ion-item ng-repeat=\"(key, value) in s.list\"\n   >\n    <h2>{{key}}</h2>\n    <p>{{value}}</p>\n    <ion-option-button class=\"button-assertive\"\n                       ng-click=\"page.deleteKey(s.list,key); $ionicListDelegate.closeOptionButtons()\">\n      Delete\n    </ion-option-button>\n    <ion-option-button class=\"button-info\"\n                       ng-click=\"s.itemName=key;s.itemValue=value; $ionicListDelegate.closeOptionButtons()\">\n      Edit\n    </ion-option-button>\n    <ion-delete-button class=\"ion-minus-circled\"\n                       ng-click=\"page.deleteKey(s.list, key)\">\n    </ion-delete-button>\n    <ion-reorder-button class=\"ion-navicon\"\n                        on-reorder=\"reorderItem(key, $fromIndex, $toIndex)\">\n    </ion-reorder-button>\n\n  </ion-item>\n</ion-list>\n\n</div>"
+    <div class="item item-input-inset" style="border: none;">
+
+        <div class="storyEditAttributeHeader item item-input-inset" 
+             >
+            <button class="btn" 
+                    ng-if="page.page.edit"
+                    ng-click= "page.page.save();
+                        page.page.edit = false;
+                        page.page.storyIndex = -1;"
+                    style="background-color: red;color:black;"
+                    ng-class="{'red':page.page.current.dirty}"
+                    >Save</button>       
+            <button class="btn" 
+                    ng-if="!page.page.edit"
+                    ng-click= "page.page.edit = true;
+                        page.page.setSource(key);"
+                    style="background-color: red;color:black;"
+                    ng-class="{'red':page.page.current.dirty}"
+                    >Edit</button>                 
+            <button class="btn"
+                    ng-if="page.page.current.dirty"
+                    ng-click= "page.storage.preferedSources = key;
+                        page.page.setSource(key);
+                        page.page.save();"
+                    ng-repeat="(source, key) in page.page.getKeys(page.storage.persistance.sources)"
+                    style="background-color: {{page.storage.persistance.sources[key].color}}"
+                    ng-class="{'active':page.storage.preferedSources === key}"
+                    >{{page.storage.persistance.sources[key].name}}</button>                      
+        </div>
+
+        <label class="item-input-wrapper">
+            <i class="icon ion-search placeholder-icon"></i>
+            <input type="search" placeholder="Search">
+            <input type="text" 
+                   action
+                   on-return="page.location.path('/app/page/'+searchPageName);
+                   searchPageName='';"
+                   ng-model="searchPageName" 
+                   style="width:100%;">
+        </label>
+        <i class="icon-left ion-more fa-rotate-90"
+           ng-click="setSource = !setSource;"
+           style="margin-left: 10px;"
+           ></i>
+    </div>
+    <p id="leadtext" ng-if="setSource">search sites</p>
+    <div class="storyEditAttributeHeader item item-input-inset" 
+         ng-if="setSource"
+         >
+
+        <button class="btn" 
+                ng-click= "page.storage.persistance.sources[key].loadPages = !page.storage.persistance.sources[key].loadPages;
+                    page.storage.loadPagesBySource(page.storage.persistance.sources[key])"
+                ng-repeat="(source, key) in page.page.getKeys(page.storage.persistance.sources)"
+                style="background-color: {{page.storage.persistance.sources[key].color}}"
+                ng-class="{'active':page.storage.persistance.sources[key].loadPages}"
+                >{{page.storage.persistance.sources[key].name}}</button>                      
+    </div>
+    <div>
+        <div class="list card" ng-if="searchPageName.length > 2">
+            <a class="item item-icon-left"
+               href="#/app/page/{{value.pageName}}"
+               ng-repeat="(name, value) in page.storage.pages | filter:searchPageName track by $index"
+               ng-style=""
+               >
+                <i class="icon ion-document"
+                   style="background-color: {{value.source.color}}"></i>
+                <h2>{{value.pageName}}</h2>
+            </a>
+        </div>
+    </div>
+</div>
