@@ -7,7 +7,7 @@ angular.module('component.page', ['storage'])
         page.current=page.getDefault();
     }
     page.setSource = function(key) {
-        $storage.preferedSources=key;
+        $storage.preferedSources=key;        
         if ( ($storage.cachedPages[key] !== undefined) &&
              ($storage.cachedPages[key][$state.params.name] !== undefined) )  
                 page.current=$storage.cachedPages[key][$state.params.name];
@@ -43,13 +43,17 @@ angular.module('component.page', ['storage'])
     page.init();
     return page;
 })
-.controller('PageCtrl', function ($log, $state, $window, $scope, $location, $timeout, $app, $page, $storage, $http ) {        	
+.controller('PageCtrl', function ($log, $state, $window, $scope, $location, 
+                            $timeout, $app, $page, $storage, $http, 
+                            $ionicSideMenuDelegate, $user ) {        	
     var page = this;
     page.scope = $scope;
     page.page = $page;
     page.app=$app;
+    page.user=$user;
     page.storage = $storage;
     page.location = $location;
+    page.$ionicSideMenuDelegate=$ionicSideMenuDelegate;
 
     $scope.$watch(function(data) {
         if ($storage.cachedPages[$storage.preferedSources]===undefined)return;

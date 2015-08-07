@@ -19,7 +19,7 @@ angular.module('storage', ['firebase'])
             name: 'site',
             color: 'none',
             path: '/wiki/pages',
-            src: 'https://weo-wiki.firebaseio.com',
+            src: '',
             type: 'site',
             loadPages: false
         };
@@ -51,8 +51,7 @@ angular.module('storage', ['firebase'])
     persistance.types.local.get = function(pageName, source, callback) {
         var page = persistance.pages[pageName];
         if (page !== undefined) {
-            page.source = source;
-            callback(page);
+            callback(page, source);
             return true;
         }
     };    
@@ -93,10 +92,8 @@ angular.module('storage', ['firebase'])
     persistance.types.firebase.get = function(pageName, source, callback) {
         $firebaseObject(new Firebase(source.src+source.path+'/'+pageName)).$loaded(function(page) {
             if (page.title !== undefined) {
-                page.source = source;
                 //persistance.types.local.set(page, persistance.sources.local, function(result){})
-                callback(page);
-            return true;
+                callback(page, source);
             }
         })
     };
@@ -111,7 +108,6 @@ angular.module('storage', ['firebase'])
                     for(var k in page) remotePage[k]=page[k];
                     remotePage.$save();
                     callback(true);
-                    return true;
             });
        // }
         return false;
@@ -119,7 +115,7 @@ angular.module('storage', ['firebase'])
     persistance.types.site={};
     persistance.types.site.getPages = function(source, callback) {
         var pages=[];
-        callback(pages) ;        
+        callback() ;        
     }
     persistance.types.site.get = function(pageName, source, callback) {
          $http.get(source.path+'/'+pageName).then(
@@ -127,8 +123,7 @@ angular.module('storage', ['firebase'])
                 var page = data.data;
                 if (page !== undefined) {
                     page=JSON.parse('{'+page+'}');
-                    page.source = source;
-                    callback(page);
+                    callback(page, source);
                     return true;
                 }
             }
@@ -176,6 +171,7 @@ angular.module('storage', ['firebase'])
             };
             page.source=source;
         });
+        page.source=source;
     }
     function getHeader(p) {
         var header = p.header || {};
@@ -192,16 +188,18 @@ angular.module('storage', ['firebase'])
      * @param {function} callback
      * @returns {Page}
      */
-    storage.getPageFromSource = function (pageName, persistanceName) {
-        return storage.cachedPages[persistanceName][pageName];
+    storage.getPageFromSource = function (pageName, sourceName) {
+        var p = storage.cachedPages[sourceName][pageName];
+        return
     }
     storage.getPage = function (pageName) {
         angular.forEach(Object.keys(persistance.sources), function(sourceName, key){
             var source = persistance.sources[sourceName];
-            persistance.types[source.type].get(pageName, source, function(p) {
+            persistance.types[source.type].get(pageName, source, function(p, source) {
                 if (p === undefined) return;
-                if (storage.cachedPages[p.source.name] === undefined) storage.cachedPages[p.source.name]={};
-                storage.cachedPages[p.source.name][p.title]=p;
+                if (storage.cachedPages[source.name]===undefined) storage.cachedPages[source.name]={};
+                p.source=persistance.sources[sourceName];
+                storage.cachedPages[source.name][p.title]=p;
             });
         });
     };

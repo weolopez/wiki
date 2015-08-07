@@ -6,11 +6,12 @@ angular.module('component.wikipage', [])
                 pagename: '@'
         },
         templateUrl: 'components/wikipage/wikipage.html',
-        controller: function($log, $location, $storage, $page, $scope) {        	
+        controller: function($log, $location, $storage, $page, $scope, $ionicSideMenuDelegate) {        	
             var page = this;
             page.page = $page;
             page.location = $location;
             page.storage=$storage;
+            page.$ionicSideMenuDelegate=$ionicSideMenuDelegate;
             
             page.storage.getPage('pages');
             $scope.$watch(function(data) {
