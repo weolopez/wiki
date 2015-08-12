@@ -1,6 +1,7 @@
 angular.module('component.user', ['firebase'])
     .factory('$user', function($log, $q, $location, $timeout, $firebaseAuth, $firebaseObject) {
     var user = this;
+    user.online = 0;
     user.ref='https://weo-wiki.firebaseio.com';
     user.editRefString = 'users';
     user.usersRef = new Firebase(user.ref);
@@ -13,16 +14,24 @@ angular.module('component.user', ['firebase'])
         github: {
             name:'github',
             imgurl:'https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png'
+        },
+        twitter: {
+            name:'twitter',
+            imgurl:'https://upload.wikimedia.org/wikipedia/commons/f/f3/Twitter_icon.png'
+        },
+        google: {
+            name:'google',
+            imgurl:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Google_plus.svg/1047px-Google_plus.svg.png'
         }
     };
 
-    user.online = 0;
 
     $timeout(function() {
       //  if (user.user === undefined) authUser('facebook');
     }, 5000);
 
     user.usersRef.onAuth(function authDataCallback(authData) {
+     //  console.log('onAuth:'+authData.provider);
         if (authData) {
             setUser(authData);
         } else {
@@ -30,6 +39,7 @@ angular.module('component.user', ['firebase'])
         }
     });
     connectedRef.on('value', function(snap) {
+     //  console.log('connectedRef:'+snap);
         if ((snap.val() === true) && (user.userConnectionsRef !== undefined)) {
             var con = user.userConnectionsRef.push(true);
             con.onDisconnect().remove();
@@ -46,9 +56,8 @@ angular.module('component.user', ['firebase'])
     }
 
     function setUser(authData) {
-           	console.dir(authData);
-        if (authData.provider==='facebook') {
-            var name = authData.facebook.cachedUserProfile.name.replace(/\s+/g, '');
+            console.dir(authData.provider);
+            var name = authData[authData.provider].displayName.replace(/\s+/g, '');
             user.userConnectionString = user.ref + '/users/' + name;
             user.userRef = new Firebase(user.userConnectionString);
             $firebaseObject(user.userRef)
@@ -56,8 +65,7 @@ angular.module('component.user', ['firebase'])
                 user.user = value;
                 user.user.name = name;
                 user.user.profileProvider = authData.provider;
-                user.user.facebook = authData.facebook.cachedUserProfile;
-                user.user.facebook.profileImageURL = authData.facebook.profileImageURL;
+                user.user.profile = authData[user.user.profileProvider];
                 user.userConnectionsRef = new Firebase(user.userConnectionString + '/connections');
                 user.userLastOnlineRef = new Firebase(user.userConnectionString + '/lastOnline');
 
@@ -69,7 +77,7 @@ angular.module('component.user', ['firebase'])
                 }, 'location');
                 save();
             });
-        }
+      //  }
     }
 
     function save() {
@@ -110,16 +118,17 @@ angular.module('component.user', ['firebase'])
         }
     }
     user.getImage = function(userName, source) {
-        var returnImage = '/img/ionic.png', facebookImage;
+        var returnImage = 'img/ionic.png', loggedInImage;
+        if (user.user === undefined) return returnImage;
         try {
-            facebookImage = user.user.facebook.profileImageURL;
+            loggedInImage = user.user.profile.profileImageURL;
         } catch (err) {}     
         
-        if (source==='facebook') {
-            if (facebookImage !== undefined) returnImage=facebookImage;
+        if (source===user.user.profileProvider) {
+            if (loggedInImage !== undefined) returnImage=loggedInImage;
         }
         if (source===undefined) {
-            if (facebookImage !== undefined) returnImage=facebookImage;
+            if (loggedInImage !== undefined) returnImage=loggedInImage;
         }
         
         return returnImage;
