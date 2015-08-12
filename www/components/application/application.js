@@ -9,10 +9,11 @@ angular.module('component.application', ['storage'])
     app.navBar = $ionicNavBarDelegate;
     return app;
 })
-.controller('AppCtrl', function ($log, $storage, $app, $page,  $window, $ionicActionSheet, $scope) {        	
+.controller('AppCtrl', function ($log, $storage, $app, $page, $user, $window, $ionicActionSheet, $scope) {        	
     var app = this;
     $app.scope = $scope;
     app.page=$page;
+    app.user=$user;
     app.wide = ($window.innerWidth >735);
 
     // Triggered on a button click, or some other target
@@ -32,6 +33,7 @@ angular.module('component.application', ['storage'])
                 lButtons.push(
                     {text: '<b>Paste</b> ' + pasteObject.name,
                         action: function () {
+                            if ($page.current.story===undefined) $page.current.story=[];
                             $page.current.story.push(pasteObject);
                             $storage.setPage($page.current);
                         }

@@ -38,9 +38,7 @@ angular.module('component.user', ['firebase'])
     });
 
     user.authUser = function(authProviderName) {
-        $firebaseAuth(user.usersRef).$authWithOAuthRedirect(authProviderName).then(function(authData) {
-            console.dir(authData);
-        }),
+        $firebaseAuth(user.usersRef).$authWithOAuthPopup(authProviderName).then(setUser),
         function(reason) {
             $log.debug('Failed $authWithOAuthRedirect: ' + reason);
             alert(reason.toString());
@@ -49,26 +47,29 @@ angular.module('component.user', ['firebase'])
 
     function setUser(authData) {
         //   	console.dir(authData);
-        var name = authData.facebook.cachedUserProfile.name.replace(/\s+/g, '');
-        user.userConnectionString = user.ref + '/users/' + name;
-        user.userRef = new Firebase(user.userConnectionString);
-        $firebaseObject(user.userRef)
-            .$loaded(function(value) {
-            user.user = value;
-            user.user.name = name;
-            user.user.profile = authData.facebook.cachedUserProfile;
-            user.userConnectionsRef = new Firebase(user.userConnectionString + '/connections');
-            user.userLastOnlineRef = new Firebase(user.userConnectionString + '/lastOnline');
+        if (authData.provider==='facebook') {
+            var name = authData.facebook.cachedUserProfile.name.replace(/\s+/g, '');
+            user.userConnectionString = user.ref + '/users/' + name;
+            user.userRef = new Firebase(user.userConnectionString);
+            $firebaseObject(user.userRef)
+                .$loaded(function(value) {
+                user.user = value;
+                user.user.name = name;
+                user.user.profileProvider = authData.provider;
+                user.user.facebook = authData.facebook.cachedUserProfile;
+                user.user.facebook.profileImageURL = authData.facebook.profileImageURL;
+                user.userConnectionsRef = new Firebase(user.userConnectionString + '/connections');
+                user.userLastOnlineRef = new Firebase(user.userConnectionString + '/lastOnline');
 
-            user.user.$watch(function() {
-                $timeout(function() {
-                    if (user.user.location === $location.url()) return;
-                    if (user.synch) $location.url(user.user.location);
-                }, 1000);
-            }, 'location');
-            save();
-        });
-
+                user.user.$watch(function() {
+                    $timeout(function() {
+                        if (user.user.location === $location.url()) return;
+                        if (user.synch) $location.url(user.user.location);
+                    }, 1000);
+                }, 'location');
+                save();
+            });
+        }
     }
 
     function save() {
@@ -96,27 +97,33 @@ angular.module('component.user', ['firebase'])
     user.getUsers = function() {
         if ( (user.users === undefined) ||
              (user.userRef !== undefined) )     {
-            user.users = $firebaseObject(user.userRef);
-            var count = 0;
-            $timeout(function() {
+            var usersConnectionString = user.ref + '/users';
+            $firebaseObject(new Firebase(usersConnectionString))
+            .$loaded(function(value) {
+                user.users = value;
+                var count=0;
                 angular.forEach(user.users, function(value, key) {
                     if (value.connections !== undefined) count = count + 1;
                 }, count);
                 user.online = count;
-            }, 1000);
+            });
         }
     }
-    user.getImage = function(userName) {
-        var returnImage;
-
+    user.getImage = function(userName, source) {
+        var returnImage = '/img/ionic.png', facebookImage;
         try {
-            returnImage = user.users[userName].profile.picture.data.url;
-        } catch (err) {
-            user.getUsers();
-            returnImage = '/images/default-avatar.png';
+            facebookImage = user.user.facebook.profileImageURL;
+        } catch (err) {}     
+        
+        if (source==='facebook') {
+            if (facebookImage !== undefined) returnImage=facebookImage;
         }
+        if (source===undefined) {
+            if (facebookImage !== undefined) returnImage=facebookImage;
+        }
+        
         return returnImage;
-    }
+    };
     user.getLastOnline = function(userName) {
         var returnDate;
 
