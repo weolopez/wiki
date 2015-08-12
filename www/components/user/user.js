@@ -1,7 +1,7 @@
 angular.module('component.user', ['firebase'])
     .factory('$user', function($log, $q, $location, $timeout, $firebaseAuth, $firebaseObject) {
     var user = this;
-    user.ref='https://weo.firebaseio.com';
+    user.ref='https://weo-wiki.firebaseio.com';
     user.editRefString = 'users';
     user.usersRef = new Firebase(user.ref);
     var connectedRef = new Firebase(user.ref + '/.info/connected');
@@ -46,7 +46,7 @@ angular.module('component.user', ['firebase'])
     }
 
     function setUser(authData) {
-        //   	console.dir(authData);
+           	console.dir(authData);
         if (authData.provider==='facebook') {
             var name = authData.facebook.cachedUserProfile.name.replace(/\s+/g, '');
             user.userConnectionString = user.ref + '/users/' + name;
