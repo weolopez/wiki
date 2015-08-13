@@ -54,7 +54,17 @@ angular.module('component.page', ['storage'])
     page.storage = $storage;
     page.location = $location;
     page.$ionicSideMenuDelegate=$ionicSideMenuDelegate;
-
+    var url='https://webtest.csp.att.com/ocetest/oce/rest/api/orders/queue/count/?searchString={%22view%22:[%22CDE-HS%22],%22partners%22:[{%22partnerName%22:%22STI%22},{%22partnerName%22:%22SGS%22}]}';
+    page.getContent=function(s){
+    $http({method: 'GET', url: s.name}).
+          then(function(response) {
+            page.status = response.status;
+            s.result = response.data;
+          }, function(response) {
+            page.data = response.data || "Request failed";
+            page.status = response.status;
+        });
+    }    
     $scope.$watch(function(data) {
         if ($storage.cachedPages[$storage.preferedSources]===undefined)return;
         return $storage.cachedPages[$storage.preferedSources][$state.params.name];

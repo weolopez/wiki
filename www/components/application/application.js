@@ -1,4 +1,4 @@
-angular.module('component.application', ['storage'])        
+angular.module('component.application', ['storage'])    
 .factory('CONST', function() {
     this.FB='https://weo-wiki.firebaseio.com';
     return this;
@@ -15,7 +15,7 @@ angular.module('component.application', ['storage'])
     app.page=$page;
     app.user=$user;
     app.wide = ($window.innerWidth >735);
-
+    
     // Triggered on a button click, or some other target
     $app.open = function() {
         if ($page.edit !== true) {

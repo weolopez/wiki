@@ -48,7 +48,7 @@ angular.module('component.user', ['firebase'])
     });
 
     user.authUser = function(authProviderName) {
-        $firebaseAuth(user.usersRef).$authWithOAuthPopup(authProviderName).then(setUser),
+        $firebaseAuth(user.usersRef).$authWithOAuthRedirect(authProviderName).then(setUser),
         function(reason) {
             $log.debug('Failed $authWithOAuthRedirect: ' + reason);
             alert(reason.toString());
@@ -56,7 +56,7 @@ angular.module('component.user', ['firebase'])
     }
 
     function setUser(authData) {
-            console.dir(authData.provider);
+            console.log(authData.provider);
             var name = authData[authData.provider].displayName.replace(/\s+/g, '');
             user.userConnectionString = user.ref + '/users/' + name;
             user.userRef = new Firebase(user.userConnectionString);
