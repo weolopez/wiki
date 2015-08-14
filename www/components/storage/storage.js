@@ -10,31 +10,35 @@ angular.module('storage', ['firebase'])
     persistance.types={};
     persistance.sources.local = {
             name: 'local',
+            note: ': stored in the current browser, volitile, should be saved to permanant storage.',
+            imgurl: 'http://www.lewebmonster.com/wp-content/uploads/2012/12/html5-localstorage.jpg',
             color: 'pink',
-            path: '/wiki/pages',
             type: 'local',
             loadPages: true
         };
     persistance.sources.site = {
             name: 'site',
+            note: ': can not be used for storage(YET). Default settings defined in web server.',
+            imgurl: 'http://www.catonmat.net/blog/wp-content/uploads/2009/12/github-social-coding.gif',
             color: 'none',
-            path: '/wiki/pages',
             src: '',
             type: 'site',
             loadPages: false
         };
     persistance.sources.home = {
             name: 'home',
+            note: ': Firebase backend. Original implementation backend',
+            imgurl: 'http://i0.wp.com/juku.it/wp-content/uploads/2013/06/firebase-logo-blog.png?resize=80%2C80',
             color: 'green',
-            path: '/wiki/pages',
             src: 'https://weo.firebaseio.com',
             type: 'firebase',
             loadPages: false
         };
     persistance.sources.root = {
             name: 'root',
+            note: ': Firebase backend. New implementation backend',
+            imgurl: 'http://i0.wp.com/juku.it/wp-content/uploads/2013/06/firebase-logo-blog.png?resize=80%2C80',
             color: 'grey',
-            path: '/wiki/pages',
             src: 'https://weo-wiki.firebaseio.com',
             type: 'firebase',
             loadPages: true
@@ -55,14 +59,15 @@ angular.module('storage', ['firebase'])
             return true;
         }
     };    
-    persistance.types.local.set = function(page, source, callback) {   
+    persistance.types.local.set = function(page, source, callback, path) {   
+        path = typeof path !== 'undefined' ?  path : '/wiki/pages';
         var updatedObject={};
-        if ($window.localStorage[source.path]===undefined) updatedObject={};
-        else updatedObject = JSON.parse($window.localStorage[source.path]);
+        if ($window.localStorage[path]===undefined) updatedObject={};
+        else updatedObject = JSON.parse($window.localStorage[path]);
         updatedObject[page.title] = page;
         
         var cache = [];
-        $window.localStorage[source.path]=JSON.stringify(updatedObject, function(key, value) {
+        $window.localStorage[path]=JSON.stringify(updatedObject, function(key, value) {
             if (typeof value === 'object' && value !== null) {
                 if (cache.indexOf(value) !== -1) {
                     // Circular reference found, discard key
@@ -77,9 +82,10 @@ angular.module('storage', ['firebase'])
         return true;
     };    
     persistance.types.firebase={};
-    persistance.types.firebase.getPages = function(source, callback) {
+    persistance.types.firebase.getPages = function(source, callback, path) {   
+        path = typeof path !== 'undefined' ?  path : '/wiki/pages';
         var pages=[];
-        $firebaseObject(new Firebase(source.src+source.path)).$loaded(function(page) {
+        $firebaseObject(new Firebase(source.src+path)).$loaded(function(page) {
             angular.forEach(Object.keys(page), function(value, key) {
                 if (value.charAt(0)!=='$') {
                     var page = {source:source, pageName:value};
@@ -87,24 +93,23 @@ angular.module('storage', ['firebase'])
                 }
             });
             callback(pages);          
+        },
+        function(error) {
+            console.error("Error:", error);
         });
     }
-    persistance.types.firebase.get = function(pageName, source, callback) {
-        $firebaseObject(new Firebase(source.src+source.path+'/'+pageName)).$loaded(function(page) {
+    persistance.types.firebase.get = function(pageName, source, callback, path) {   
+        path = typeof path !== 'undefined' ?  path : '/wiki/pages';
+        $firebaseObject(new Firebase(source.src+path+'/'+pageName)).$loaded(function(page) {
             if (page.title !== undefined) {
                 //persistance.types.local.set(page, persistance.sources.local, function(result){})
                 callback(page, source);
             }
         })
     };
-    persistance.types.firebase.set = function(page, source, callback) {
-     /*   console.dir(page);
-        if (page.$save !== undefined) {
-            page.$save();
-        }
-        else {
-        */    
-       $firebaseObject(new Firebase(source.src+source.path+'/'+page.title)).$loaded(function(remotePage) {
+    persistance.types.firebase.set = function(page, source, callback, path) {   
+        path = typeof path !== 'undefined' ?  path : '/wiki/pages';
+       $firebaseObject(new Firebase(source.src+path+'/'+page.title)).$loaded(function(remotePage) {
                     for(var k in page) remotePage[k]=page[k];
                     remotePage.$save();
                     callback(true);
@@ -117,13 +122,14 @@ angular.module('storage', ['firebase'])
         var pages=[];
         callback() ;        
     }
-    persistance.types.site.get = function(pageName, source, callback) {
-         $http.get(source.path+'/'+pageName).then(
+    persistance.types.site.get = function(pageName, source, callback, path) {   
+        path = typeof path !== 'undefined' ?  path : '/wiki/pages';
+         $http.get(path+'/'+pageName).then(
             function(data, status, headers, config) {
-                var page = data.data;
-                if (page !== undefined) {
-                    page=JSON.parse('{'+page+'}');
-                    callback(page, source);
+                var p = data.data;
+                if (p !== undefined) {
+                    p=JSON.parse('{'+p+'}');
+                    callback(p, source);
                     return true;
                 }
             }
@@ -228,6 +234,9 @@ angular.module('storage', ['firebase'])
             })
             source.pagesLoaded=true;
         }
+    }
+    storage.getProfile = function() {
+        
     }
   //  storage.init();
     return storage;

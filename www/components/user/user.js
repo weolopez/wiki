@@ -25,11 +25,6 @@ angular.module('component.user', ['firebase'])
         }
     };
 
-
-    $timeout(function() {
-      //  if (user.user === undefined) authUser('facebook');
-    }, 5000);
-
     user.usersRef.onAuth(function authDataCallback(authData) {
      //  console.log('onAuth:'+authData.provider);
         if (authData) {
@@ -56,28 +51,27 @@ angular.module('component.user', ['firebase'])
     }
 
     function setUser(authData) {
-            console.log(authData.provider);
-            var name = authData[authData.provider].displayName.replace(/\s+/g, '');
-            user.userConnectionString = user.ref + '/users/' + name;
-            user.userRef = new Firebase(user.userConnectionString);
-            $firebaseObject(user.userRef)
-                .$loaded(function(value) {
-                user.user = value;
-                user.user.name = name;
-                user.user.profileProvider = authData.provider;
-                user.user.profile = authData[user.user.profileProvider];
-                user.userConnectionsRef = new Firebase(user.userConnectionString + '/connections');
-                user.userLastOnlineRef = new Firebase(user.userConnectionString + '/lastOnline');
+        console.log(authData.provider);
+        var name = authData[authData.provider].displayName.replace(/\s+/g, '');
+        user.userConnectionString = user.ref + '/users/' + name;
+        user.userRef = new Firebase(user.userConnectionString);
+        $firebaseObject(user.userRef)
+            .$loaded(function(value) {
+            user.user = value;
+            user.user.name = name;
+            user.user.profileProvider = authData.provider;
+            user.user.profile = authData[user.user.profileProvider];
+            user.userConnectionsRef = new Firebase(user.userConnectionString + '/connections');
+            user.userLastOnlineRef = new Firebase(user.userConnectionString + '/lastOnline');
 
-                user.user.$watch(function() {
-                    $timeout(function() {
-                        if (user.user.location === $location.url()) return;
-                        if (user.synch) $location.url(user.user.location);
-                    }, 1000);
-                }, 'location');
-                save();
-            });
-      //  }
+            user.user.$watch(function() {
+                $timeout(function() {
+                    if (user.user.location === $location.url()) return;
+                    if (user.synch) $location.url(user.user.location);
+                }, 1000);
+            }, 'location');
+            save();
+        });
     }
 
     function save() {

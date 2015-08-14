@@ -53,7 +53,7 @@
                       ></textarea>
         </div>   
     </div>
-<textarea style="height: 500px" ng-if="showSource">{{page.page.current}}
+<textarea style="height: 500px" ng-if="page.showSource">{{page.page.current}}
         </textarea>
     
 </ion-content>
@@ -61,7 +61,7 @@
                 class="bar-footer"
                 ng-if="page.page.edit">
   <div class="left-buttons">
-    <button class="button" ng-click="showSource=!showSource;">Source</button>
+    <button class="button"  ng-click="page.showSource=!page.showSource;">Source</button>
   </div>
   <h1 class="title"
       style="background-color: {{page.page.current.source.color}};margin: 0;"
