@@ -1,4 +1,4 @@
-angular.module('component.page', ['storage'])        
+angular.module('component.page', ['storage', 'textAngular'])        
 .factory('$page', function ($log, $timeout, $storage, $state) {
     var page = this;
     page.pages=$storage.pages;
@@ -117,7 +117,6 @@ angular.module('component.page', ['storage'])
                //    $window.open(s.url, '_blank');
                     return;
                 }
-                console.dir(s)
                 s.data = data;	
                var html = data.html();
                if (html!=='') s.html = html;
@@ -157,5 +156,4 @@ angular.module('component.page', ['storage'])
     page.test = function() {
         alert("TEST SUCCESS");
     }
-})
-;
+});

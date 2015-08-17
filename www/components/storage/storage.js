@@ -141,13 +141,13 @@ angular.module('storage', ['firebase'])
     } 
     return persistance;
 })
-.factory('$storage', function ($window, $cacheFactory, persistance) {
+.factory('$storage', function ($window, persistance) {
     var storage = this;
     storage.persistance=persistance;
     storage.pages=[];
     storage.cachedPages={};
-    storage.preferedSources='root';
     storage.init = function() {
+        storage.preferedSources='local';
     };
     storage.copy= function(updatedObject){
         $window.localStorage['copy']=JSON.stringify(updatedObject);
@@ -238,7 +238,7 @@ angular.module('storage', ['firebase'])
     storage.getProfile = function() {
         
     }
-  //  storage.init();
+    storage.init();
     return storage;
 })
 ; 

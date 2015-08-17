@@ -53,6 +53,7 @@ and open the template in the editor.
 }
 
 .btn {
+	  float: left;
 	  display: block;
   
 	  background-color: #F7F7F9;

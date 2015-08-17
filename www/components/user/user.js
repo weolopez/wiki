@@ -1,59 +1,23 @@
 angular.module('component.user', ['firebase'])
-    .factory('$user', function($log, $q, $location, $timeout, $firebaseAuth, $firebaseObject) {
+    .factory('$user', function($log, $q, $location, $timeout, $firebaseAuth, $firebaseObject, $storage) {
     var user = this;
-    user.online = 0;
-    user.ref='https://weo-wiki.firebaseio.com';
-    user.editRefString = 'users';
-    user.usersRef = new Firebase(user.ref);
-    var connectedRef = new Firebase(user.ref + '/.info/connected');
-    user.authProviders={
-        facebook: {
-            name:'facebook',
-            imgurl:'https://www.facebook.com/images/fb_icon_325x325.png'
-        },
-        github: {
-            name:'github',
-            imgurl:'https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png'
-        },
-        twitter: {
-            name:'twitter',
-            imgurl:'https://upload.wikimedia.org/wikipedia/commons/f/f3/Twitter_icon.png'
-        },
-        google: {
-            name:'google',
-            imgurl:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Google_plus.svg/1047px-Google_plus.svg.png'
-        }
+    var online = 0;
+    var ref='https://weo-wiki.firebaseio.com';
+    var editRefString = 'users';
+    var usersRef = new Firebase(ref);    
+    var connectedRef = new Firebase(ref + '/.info/connected');
+    function init() {
+        user.getUsers();
+        $storage.preferedSources='root';
+        user.user={name:'Anonymous User', profileLocation:getProfile};
     };
-
-    user.usersRef.onAuth(function authDataCallback(authData) {
-     //  console.log('onAuth:'+authData.provider);
-        if (authData) {
-            setUser(authData);
-        } else {
-            $log.error('Loading for the first time.');
-        }
-    });
-    connectedRef.on('value', function(snap) {
-     //  console.log('connectedRef:'+snap);
-        if ((snap.val() === true) && (user.userConnectionsRef !== undefined)) {
-            var con = user.userConnectionsRef.push(true);
-            con.onDisconnect().remove();
-            user.userLastOnlineRef.onDisconnect().set(Firebase.ServerValue.TIMESTAMP);
-        }
-    });
-
-    user.authUser = function(authProviderName) {
-        $firebaseAuth(user.usersRef).$authWithOAuthRedirect(authProviderName).then(setUser),
-        function(reason) {
-            $log.debug('Failed $authWithOAuthRedirect: ' + reason);
-            alert(reason.toString());
-        };
+    function getProfile() {
+        return $storage.preferedSources;
     }
-
     function setUser(authData) {
         console.log(authData.provider);
         var name = authData[authData.provider].displayName.replace(/\s+/g, '');
-        user.userConnectionString = user.ref + '/users/' + name;
+        user.userConnectionString = ref + '/users/' + name;
         user.userRef = new Firebase(user.userConnectionString);
         $firebaseObject(user.userRef)
             .$loaded(function(value) {
@@ -72,34 +36,55 @@ angular.module('component.user', ['firebase'])
             }, 'location');
             save();
         });
-    }
-
+    };
     function save() {
         user.user.$save();
-    }
+    };
+    
+    user.authProviders={
+        facebook: {
+            name:'facebook',
+            imgurl:'https://www.facebook.com/images/fb_icon_325x325.png'
+        },
+        github: {
+            name:'github',
+            imgurl:'https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png'
+        },
+        twitter: {
+            name:'twitter',
+            imgurl:'https://upload.wikimedia.org/wikipedia/commons/f/f3/Twitter_icon.png'
+        },
+        google: {
+            name:'google',
+            imgurl:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Google_plus.svg/1047px-Google_plus.svg.png'
+        }
+    };
+    user.authUser = function(authProviderName) {
+        $firebaseAuth(usersRef).$authWithOAuthRedirect(authProviderName).then(setUser),
+        function(reason) {
+            $log.debug('Failed $authWithOAuthRedirect: ' + reason);
+            alert(reason.toString());
+        };
+    };
     user.setLocation = function(location) {
-        user.user.location = location;
+        user.user.location = location;init
         save();
-    }
-
+    };
     user.setProperty = function(key, value) {
         user.user[key] = value;
         save();
-    }
-
+    };
     user.getProperty = function(key) {
         return user.user[key];
-    }
-
-    user.setEditLocation = function(editRefString) {
-        user.editLocationConnectionsRef = new Firebase(user.ref + '/' + editRefString + '/' + user.user.name + '/connections');
-        user.editLocationLastOnlineRef = new Firebase(user.ref + '/' + editRefString + '/' + user.user.name + '/lastOnline');
-    }
-
+    };
+    user.setEditLocation = function(usereditRefString) {
+        user.editLocationConnectionsRef = new Firebase(ref + '/' + editRefString + '/' + user.user.name + '/connections');
+        user.editLocationLastOnlineRef = new Firebase(ref + '/' + editRefString + '/' + user.user.name + '/lastOnline');
+    };
     user.getUsers = function() {
         if ( (user.users === undefined) ||
              (user.userRef !== undefined) )     {
-            var usersConnectionString = user.ref + '/users';
+            var usersConnectionString = ref + '/users';
             $firebaseObject(new Firebase(usersConnectionString))
             .$loaded(function(value) {
                 user.users = value;
@@ -107,10 +92,10 @@ angular.module('component.user', ['firebase'])
                 angular.forEach(user.users, function(value, key) {
                     if (value.connections !== undefined) count = count + 1;
                 }, count);
-                user.online = count;
+                online = count;
             });
         }
-    }
+    };
     user.getImage = function(userName, source) {
         var returnImage = 'img/ionic.png', loggedInImage;
         if (user.user === undefined) return returnImage;
@@ -119,7 +104,8 @@ angular.module('component.user', ['firebase'])
         } catch (err) {}     
         
         if (source===user.user.profileProvider) {
-            if (loggedInImage !== undefined) returnImage=loggedInImage;
+            if (loggedInImage !== undefined) returnIma
+    ge=loggedInImage;
         }
         if (source===undefined) {
             if (loggedInImage !== undefined) returnImage=loggedInImage;
@@ -138,7 +124,25 @@ angular.module('component.user', ['firebase'])
         }
         if (user.users[userName].connections !== undefined) returnDate = 'Is currently online.';
         return returnDate;
-    }
-    user.getUsers();
+    };
+    
+    usersRef.onAuth(function authDataCallback(authData) {
+     //  console.log('onAuth:'+authData.provider);
+        if (authData) {
+            setUser(authData);
+        } else {
+            $log.error('Loading for the first time.');
+        }
+    });
+    connectedRef.on('value', function(snap) {
+     //  console.log('connectedRef:'+snap);
+        if ((snap.val() === true) && (user.userConnectionsRef !== undefined)) {
+            var con = user.userConnectionsRef.push(true);
+            con.onDisconnect().remove();
+            user.userLastOnlineRef.onDisconnect().set(Firebase.ServerValue.TIMESTAMP);
+        }
+    });
+    
+    init();
     return this;
 });

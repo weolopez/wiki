@@ -46,11 +46,23 @@
         <div class="storyEditAttributeHeader item item-input-inset animate-if" 
              ng-if="page.page.storyIndex===$index && page.page.key"
              >
-            <textarea ng-model="s[page.page.key]"
+            <!--textarea ng-model="s[page.page.key]"
                       on-touch="$event.stopPropagation();"
                       on-blur="page.page.save();" 
                       style="height: 250px"
-                      ></textarea>
+                      ></textarea-->
+            <div text-angular ng-model="s[page.page.key]" 
+                 ta-toolbar-class="tabtn-toolbar" 
+                 ta-toolbar-group-class="tabtn-group" 
+                 ta-toolbar-button-class="tabtn tabtn-default" 
+                 ta-toolbar-button-active-class="active"
+                 style="min-height: 300px; 
+                        height: auto;
+                        overflow: auto;
+                        font-family: inherit;
+                        font-size: 100%;
+                        margin:20px 0;
+                "></div>
         </div>   
     </div>
 <textarea style="height: 500px" ng-if="page.showSource">{{page.page.current}}
