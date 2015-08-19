@@ -1,89 +1,112 @@
-<ion-view>
-<link href="components/page/page.css" rel="stylesheet">  
-<ion-content>
-    <div ng-repeat="s in page.page.current.story track by $index" 
-            class="editable-content "
-            ng-class="{focused:page.isSelected($index)
+<ion-view hide-nav-bar="{{page.page.current.header.hidenavbar}}">
+    <link href="components/page/page.css" rel="stylesheet">  
+    <ion-content scroll-sista>
+        <div ng-repeat="s in page.page.current.story track by $index" 
+             class="editable-content "
+             ng-class="{focused:page.isSelected($index)
                     }"
-            delegate-handle="D{{$index}}"
-            ng-if="s"
-            >                       
-        <div class="animate-if" ng-if="page.page.edit" >
-        <div class="storyEditHeader item item-input-inset" 
-            ng-drop="true" 
-            ng-drop-success="page.onDropComplete($index, $data, $event)"
-            ng-drag="true" 
-            ng-drag-data="s"
-            on-touch="page.touchedIndex = $index;"
-             >
-              <i ng-class="{ 'storyEditRadio':true,
-                            'ion-ios-circle-filled':page.page.storyIndex===$index, 
-                            'ion-ios-circle-outline':page.page.storyIndex!==$index}"
-                 ng-click="page.page.storyIndex=page.componentClicked(page.page.storyIndex,$index);page.page.save();"
-              ></i>
-              <h2 contenteditable 
-                  on-blur="page.page.save();"
-                  ng-model="s.name">
-              </h2>
-        </div>     
-        <div class="storyEditAttributeHeader item item-input-inset animate-if" 
-             ng-if="page.page.storyIndex===$index"
-             >
-            <div ng-repeat="key in page.page.getKeys(s) track by $index"
-                 class="storyEditAttribute"
-                 style="color: black;">
-                <i class="icon-left ion-close-circled"   
-                   ng-click="page.deleteKey(s,key);"
-                   ></i>
-                <a ng-click="page.page.key=page.componentClicked(page.page.key,key);"
-                    >{{key}}</a>
-            </div>            
-        </div>   
-        </div>    
-        
-<div class="story animate-if" ng-class="{selectedStory:page.page.storyIndex===$index}" ng-include="'components/wikihtml/wikihtml.html'"></div>
- 	
-        <div class="storyEditAttributeHeader item item-input-inset animate-if" 
-             ng-if="page.page.storyIndex===$index && page.page.key"
-             >
-            <!--textarea ng-model="s[page.page.key]"
-                      on-touch="$event.stopPropagation();"
-                      on-blur="page.page.save();" 
-                      style="height: 250px"
-                      ></textarea-->
-            <div text-angular ng-model="s[page.page.key]" 
-                 ta-toolbar-class="tabtn-toolbar" 
-                 ta-toolbar-group-class="tabtn-group" 
-                 ta-toolbar-button-class="tabtn tabtn-default" 
-                 ta-toolbar-button-active-class="active"
-                 style="min-height: 300px; 
-                        height: auto;
-                        overflow: auto;
-                        font-family: inherit;
-                        font-size: 100%;
-                        margin:20px 0;
-                "></div>
-        </div>   
-    </div>
-<textarea style="height: 500px" ng-if="page.showSource">{{page.page.current}}
+             delegate-handle="D{{$index}}"
+             ng-if="s"
+             >                       
+            <div class="animate-if" ng-if="page.page.edit" >
+                <div class="storyEditHeader item item-input-inset" 
+                     ng-drop="true" 
+                     ng-drop-success="page.onDropComplete($index, $data, $event)"
+                     ng-drag="true" 
+                     ng-drag-data="s"
+                     on-touch="page.touchedIndex = $index;"
+                     >
+                    <i ng-class="{ 'storyEditRadio':true,
+                            'ion-ios-circle-filled':page.page.storyIndex === $index, 
+                            'ion-ios-circle-outline':page.page.storyIndex !== $index}"
+                       ng-click="page.page.storyIndex = page.componentClicked(page.page.storyIndex, $index); page.page.save();"
+                       ></i>
+                    <h2 contenteditable 
+                        on-blur="page.page.save();"
+                        ng-model="s.name">
+                    </h2>
+                </div>     
+                <div class="storyEditAttributeHeader item item-input-inset animate-if" 
+                     ng-if="page.page.storyIndex === $index"
+                     >
+                    <div ng-repeat="key in page.page.getKeys(s) track by $index"
+                         class="storyEditAttribute"
+                         style="color: black;">
+                        <i class="icon-left ion-close-circled"   
+                           ng-click="page.deleteKey(s, key);"
+                           ></i>
+                        <a ng-click="page.page.key = page.componentClicked(page.page.key, key);"
+                           >{{key}}</a>
+                    </div>            
+                </div>   
+            </div>    
+
+            <div class="story animate-if" ng-class="{selectedStory:page.page.storyIndex === $index}" ng-include="'components/wikihtml/wikihtml.html'"></div>
+
+            <div class="storyEditAttributeHeader item item-input-inset animate-if" 
+                 ng-if="page.page.storyIndex === $index && page.page.key"
+                 >
+                <textarea ng-model="s[page.page.key]"
+                          on-touch="$event.stopPropagation();"
+                          on-blur="page.page.save();" 
+                          style="height: 250px"
+                          ></textarea>
+                <!--div text-angular ng-model="s[page.page.key]" 
+                     ta-toolbar-class="tabtn-toolbar" 
+                     ta-toolbar-group-class="tabtn-group" 
+                     ta-toolbar-button-class="tabtn tabtn-default" 
+                     ta-toolbar-button-active-class="active"
+                     style="min-height: 300px; 
+                            height: auto;
+                            overflow: auto;
+                            font-family: inherit;
+                            font-size: 100%;
+                            margin:20px 0;
+                    "></div-->
+            </div>   
+        </div>
+        <textarea style="height: 500px" ng-if="page.showSource">{{page.page.current}}
         </textarea>
-    
-</ion-content>
-<ion-footer-bar align-title="left" 
-                class="bar-footer"
-                ng-if="page.page.edit">
-  <div class="left-buttons">
-    <button class="button"  ng-click="page.showSource=!page.showSource;">Source</button>
-  </div>
-  <h1 class="title"
-      style="background-color: {{page.page.current.source.color}};margin: 0;"
-      >{{page.page.current.source.name}}</h1>
-  <div class="buttons" ng-click="doSomething()">
-     <button class="btn ion-share" 
-                        ng-click="page.app.open()"
-                        style="color: {{page.page.current.source.color}};"
-                        >
-                </button>
-  </div>
-</ion-footer-bar>        
+
+    </ion-content>
+    <ion-footer-bar align-title="left" 
+                    class="bar-footer"
+                    ng-if="page.page.edit">
+        <div class="left-buttons">
+            <button style="margin: 5px;" class="button"  ng-click="page.showSource = !page.showSource;">Source</button>
+        </div>
+        <h1 class="title"
+            style="background-color: {{page.page.current.source.color}};margin: 0;"
+            >{{page.page.current.source.nam}}</h1>
+        <div class="storyEditAttributeHeader item item-input-inset" 
+             >
+            <button class="btn" 
+                    ng-if="app.page.edit"
+                    ng-click= "app.page.save();
+                            app.page.edit = false;
+                            app.page.storyIndex = - 1;"
+                    style="background-color: red;color:black;"
+                    >Save</button>       
+            <button class="btn" 
+                    ng-if="!app.page.edit"
+                    ng-click= "app.page.edit = true;"
+                    style="background-color: red;color:black;"
+                    >Edit</button>                 
+            <button class="btn"
+                    ng-if="app.page.edit"
+                    ng-click= "app.page.current.source = app.storage.persistance.sources[key]; app.page.save();"
+                    ng-repeat="(source, key) in app.page.getKeys(app.storage.persistance.sources)"
+                    style="background-color: {{app.storage.persistance.sources[key].color}}"
+                    ng-class="{
+                            'active': app.storage.preferedSources === key}"
+                    >{{app.storage.persistance.sources[key].name}}</button>                      
+        </div>
+        <div class="buttons" ng-click="doSomething()">
+            <button class="btn ion-share" 
+                    ng-click="page.app.open()"
+                    style="color: {{page.page.current.source.color}};float:right;"
+                    >
+            </button>
+        </div>
+    </ion-footer-bar>        
 </ion-view>

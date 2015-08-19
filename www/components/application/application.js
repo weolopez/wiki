@@ -9,12 +9,24 @@ angular.module('component.application', ['storage'])
     app.navBar = $ionicNavBarDelegate;
     return app;
 })
-.controller('AppCtrl', function ($log, $storage, $app, $page, $user, $window, $ionicActionSheet, $scope) {        	
+.controller('AppCtrl', function ($log, $storage, $app, $page, $user, $window, $ionicActionSheet, $scope, $location) {        	
     var app = this;
     $app.scope = $scope;
+    app.storage=$storage;
+    app.location=$location;
     app.page=$page;
     app.user=$user;
     app.wide = ($window.innerWidth >735);
+    
+    app.search = function() {
+        if (app.searchPageName.charAt(0)==='/') {
+            eval(app.searchPageName.substring(1));
+        }
+        else $location.path('app/page/'+app.searchPageName);
+                             app.searchPageName='';
+                             app.page.$ionicSideMenuDelegate.toggleRight();
+                             app.closeKeyboard();
+    };
     
     // Triggered on a button click, or some other target
     $app.open = function() {

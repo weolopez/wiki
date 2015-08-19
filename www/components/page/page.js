@@ -2,7 +2,6 @@ angular.module('component.page', ['storage', 'textAngular'])
 .factory('$page', function ($log, $timeout, $storage, $state) {
     var page = this;
     page.pages=$storage.pages;
-    
     page.init = function() {
         page.current=page.getDefault();
     }
@@ -45,7 +44,7 @@ angular.module('component.page', ['storage', 'textAngular'])
 })
 .controller('PageCtrl', function ($log, $state, $window, $scope, $location, 
                             $timeout, $app, $page, $storage, $http, 
-                            $ionicSideMenuDelegate, $user ) {        	
+                            $ionicSideMenuDelegate, $user, $ionicNavBarDelegate ) {        	
     var page = this;
     page.scope = $scope;
     page.page = $page;
@@ -54,6 +53,8 @@ angular.module('component.page', ['storage', 'textAngular'])
     page.storage = $storage;
     page.location = $location;
     page.$ionicSideMenuDelegate=$ionicSideMenuDelegate;
+    page.ionicNavBarDelegate=$ionicNavBarDelegate;
+    $ionicNavBarDelegate.showBar(true);
     var url='https://webtest.csp.att.com/ocetest/oce/rest/api/orders/queue/count/?searchString={%22view%22:[%22CDE-HS%22],%22partners%22:[{%22partnerName%22:%22STI%22},{%22partnerName%22:%22SGS%22}]}';
     page.getContent=function(s){
     $http({method: 'GET', url: s.name}).

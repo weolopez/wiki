@@ -1,1 +1,7 @@
-{"elements":{"ion-content":{}},"attributes":{}}
+{
+    "elements": {
+        "ion-content": {},
+        "ion-view": {}
+    },
+    "attributes": {}
+}

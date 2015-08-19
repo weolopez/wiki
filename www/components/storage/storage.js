@@ -148,6 +148,7 @@ angular.module('storage', ['firebase'])
     storage.cachedPages={};
     storage.init = function() {
         storage.preferedSources='local';
+        storage.loadPages();
     };
     storage.copy= function(updatedObject){
         $window.localStorage['copy']=JSON.stringify(updatedObject);

@@ -5,7 +5,8 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'component.application', 'component.page', 
-    'component.wikihtml', 'component.wikipage', 'ngDraggable', 'component.user'])
+    'component.wikihtml', 'component.wikipage', 'ngDraggable', 'component.user', 
+    'jett.ionic.scroll.sista'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {

@@ -2,9 +2,11 @@
     <ion-side-menu-content>
         <ion-nav-bar class="bar-stable">
             <ion-nav-title>
+                
                 <span style="   text-decoration: underline;
-                                text-decoration-color: {{app.page.current.source.color}};"
-                    >
+                      text-decoration-color: {{app.page.current.source.color}};"
+                      ng-click="app.page.edit=true;"
+                      >
                     {{app.page.current.title}}
                 </span>
             </ion-nav-title>
@@ -12,21 +14,78 @@
             </ion-nav-back-button>
             <ion-nav-buttons side="left">
                 <a href="#/app/page/users">
-                    <img ng-src="{{app.user.getImage(app.user.user.name)}}" style="width: 35px;border-radius: 50%;" >
+                    <img ng-src="{{app.user.getImage(app.user.user.name)}}" 
+                         style="width: 35px;border-radius: 50%;margin: 5px;" >
                 </a>
-     
+
             </ion-nav-buttons>
             <ion-nav-buttons side="right">
-                <button class="button button-icon button-clear ion-navicon" menu-toggle="right">
+                <button class="button button-icon button-clear ion-navicon" 
+                        menu-toggle="right" 
+                        ng-hide="$exposeAside.active">
                 </button>
             </ion-nav-buttons>
         </ion-nav-bar>
-        
+
         <ion-nav-view name="pageContent">
         </ion-nav-view>
     </ion-side-menu-content>
 
-    <ion-side-menu side="right">
-        <wikipage pagename="pages"></wikipage>
+    <ion-side-menu side="right" expose-aside-when="large" class="side-menu">
+        <div class="bar-stable bar bar-header" 
+             style="background: transparent;border: none;"></div>
+        <br><br>
+        <div class="item item-input-inset" style="border: none;background:none;">
+            <label class="item-input-wrapper">
+                <i class="icon ion-search placeholder-icon"></i>
+                <input       type="search" 
+                             placeholder="Search"
+                             action
+                             on-return="app.search();"
+                             ng-model="app.searchPageName"
+                             style="width:100%;">
+            </label>
+            <i class="icon-left ion-more fa-rotate-90"
+               ng-click="setSource = !setSource;"
+               style="margin-left: 10px;"
+               ></i>
+        </div>
+        <p id="leadtext" ng-if="setSource">search sites</p>
+        <div class="storyEditAttributeHeader item item-input-inset" 
+             ng-if="setSource"
+             >
+
+            <button class="btn" 
+                    ng-click= "app.storage.persistance.sources[key].loadPages = !app.storage.persistance.sources[key].loadPages;app.storage.loadPagesBySource(app.storage.persistance.sources[key])"
+                    ng-repeat="(source, key) in app.page.getKeys(app.storage.persistance.sources)"
+                    style="background-color: {{app.storage.persistance.sources[key].color}}"
+                    ng-class="{'active':app.storage.persistance.sources[key].loadPages}"
+                    >{{app.storage.persistance.sources[key].name}}</button>                      
+        </div>
+        <div>
+            <div class="list card" ng-if="app.searchPageName.length > 2">
+                <a class="item item-icon-left"
+                   href="#/app/page/{{value.pageName}}"
+                   ng-repeat="(name, value) in app.storage.pages | filter:app.searchPageName track by $index"
+                   ng-style=""
+                   >
+                    <i class="icon ion-document"
+                       style="background-color: {{value.source.color}}"></i>
+                    <h2>{{value.pageName}}</h2>
+                </a>
+            </div>
+        </div>
+        <div>
+            <p id="leadtext" >Preferred Page Sources</p>
+            <div class="storyEditAttributeHeader item item-input-inset" 
+                 >
+                <button class="btn" 
+                        ng-click= "app.page.setSource(key);"
+                        ng-repeat="(source, key) in app.page.getKeys(app.storage.persistance.sources)"
+                        style="background-color: {{app.storage.persistance.sources[key].color}}"
+                        ng-class="{'active': app.storage.preferedSources === key}"
+                        >{{app.storage.persistance.sources[key].name}}</button>                      
+            </div>
+        </div>
     </ion-side-menu>
 </ion-side-menus>
