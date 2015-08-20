@@ -73,13 +73,15 @@
                             margin:20px 0;
                     "></div-->
             </div>     
-
-            <div class="story animate-if" ng-class="{selectedStory:page.page.storyIndex === $index}" ng-include="'components/wikihtml/wikihtml.html'"></div>
+            <div 
+                 class="story animate-if" 
+                 ng-class="{selectedStory:page.page.storyIndex === $index}" 
+                ng-include="'components/wikihtml/wikihtml.html'">             
+            </div>
 
         </div>
         <textarea style="height: 500px" ng-if="page.showSource">{{page.page.current}}
         </textarea>
-
     </ion-content>
     <ion-footer-bar align-title="left" 
                     class="bar-footer"

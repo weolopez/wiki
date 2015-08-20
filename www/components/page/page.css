@@ -120,6 +120,7 @@ and open the template in the editor.
     color: silver;
 }
 .ace_line {
+  font-family: "monospace";
     overflow-scroll: true;
     -moz-user-select: text;
     -webkit-user-select: text;
