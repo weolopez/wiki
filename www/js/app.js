@@ -6,7 +6,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'component.application', 'component.page', 
     'component.wikihtml', 'component.wikipage', 'ngDraggable', 'component.user', 
-    'jett.ionic.scroll.sista'])
+    'jett.ionic.scroll.sista', 'ui.ace'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {

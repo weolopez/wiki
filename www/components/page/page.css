@@ -16,9 +16,8 @@ and open the template in the editor.
     border: black groove thin; 
 }
 .selectedStory {
-    margin: 2px;     
+    margin: 2px;
     border: black groove thin;
-    
 }
 .story {
     /* margin: 10px; */

@@ -39,18 +39,27 @@
                            >{{key}}</a>
                     </div>            
                 </div>   
-            </div>    
-
-            <div class="story animate-if" ng-class="{selectedStory:page.page.storyIndex === $index}" ng-include="'components/wikihtml/wikihtml.html'"></div>
-
+            </div>  
             <div class="storyEditAttributeHeader item item-input-inset animate-if" 
                  ng-if="page.page.storyIndex === $index && page.page.key"
                  >
-                <textarea ng-model="s[page.page.key]"
+                <!--textarea ng-model="s[page.page.key]"
                           on-touch="$event.stopPropagation();"
                           on-blur="page.page.save();" 
                           style="height: 250px"
-                          ></textarea>
+                          ></textarea-->
+                
+                      <div ui-ace
+                        ng-model="s[page.page.key]" 
+                        style="min-height: 300px; 
+                            height: auto;
+                            width: 100%;
+                            overflow: auto;
+                            font-family: inherit;
+                            font-size: 100%;
+                            margin:20px 0;"
+                >
+                </div>
                 <!--div text-angular ng-model="s[page.page.key]" 
                      ta-toolbar-class="tabtn-toolbar" 
                      ta-toolbar-group-class="tabtn-group" 
@@ -63,7 +72,10 @@
                             font-size: 100%;
                             margin:20px 0;
                     "></div-->
-            </div>   
+            </div>     
+
+            <div class="story animate-if" ng-class="{selectedStory:page.page.storyIndex === $index}" ng-include="'components/wikihtml/wikihtml.html'"></div>
+
         </div>
         <textarea style="height: 500px" ng-if="page.showSource">{{page.page.current}}
         </textarea>

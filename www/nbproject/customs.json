@@ -3,5 +3,7 @@
         "ion-content": {},
         "ion-view": {}
     },
-    "attributes": {}
+    "attributes": {
+        "ui-ace": {}
+    }
 }

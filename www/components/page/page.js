@@ -1,4 +1,4 @@
-angular.module('component.page', ['storage', 'textAngular'])        
+angular.module('component.page', ['storage'])        
 .factory('$page', function ($log, $timeout, $storage, $state) {
     var page = this;
     page.pages=$storage.pages;
