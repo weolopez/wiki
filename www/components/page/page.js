@@ -147,7 +147,7 @@ angular.module('component.page', ['storage'])
                 s.jsondata = JsonML.fromHTMLText(s.html);
 
                     if (s.jsonpath.length > 0) {
-                        s.jsondata = jsonPath(s.jsondata, s.jsonpath);
+                        s.json$event.stopPropagation();data = jsonPath(s.jsondata, s.jsonpath);
                 }
 
                 $page.save();

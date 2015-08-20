@@ -1,0 +1,38 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Aug 20, 2015, Aug 20, 2015 10:40:48 AM
+    Author     : weolopez
+*/
+
+
+.app-wide {
+    width: auto;
+}
+.page-wide {
+    width: 320px;
+    min-width: 320px;
+    max-width: 320px;
+    height: 100%;
+    position: relative;
+}	
+.body-view {
+	    position: absolute;
+	    width: 100%;
+	    height:100%;
+	    display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      -webkit-align-items: center;
+      -moz-align-items: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 10.66667px;
+      white-space: nowrap;
+      display: -webkit-flex; /* Safari */
+        display: flex;
+	}

@@ -1,7 +1,46 @@
-<ion-view>
-<ion-content>
-    <div ng-repeat="s in page.current.story track by $index">
-	<div class="story" ng-include="'components/wikihtml/wikihtml.html'"></div>
-    </div>
-</ion-content>
+<ion-view class="wiki-page-view">
+    <link href="components/wikipage/wikipage.css" rel="stylesheet">  
+    <ion-content style="">
+        <div ng-repeat="s in page.current.story track by $index">
+            <ion-header-bar align-title="left" 
+                            class="bar-positive"
+                            ng-if="page.edit"
+                            style="position: relative;">
+                <div class="buttons">
+                    <button class="button" 
+                            ng-click="doSomething()">Left Button</button>
+                </div>
+                <h1 class="title">{{s.name}}</h1>
+                <!--div class="buttons">
+                    <button class="button">Right Button</button>
+                </div-->
+            </ion-header-bar>
+            <div    ui-ace
+                    data-tap-disabled="true"
+                    ng-if="page.edit"
+                    ng-model="s.text" 
+                    style="min-height: 300px; 
+                        height: auto;
+                        width: 100%;
+                        overflow: auto;
+                        font-family: inherit;
+                        font-size: 100%;
+                        overflow-scroll: true;
+                        margin:20px 0;"
+                >
+                </div>
+            <div class="story" ng-include="'components/wikihtml/wikihtml.html'"></div>
+        </div>
+        <br><br><br>
+    </ion-content>
+    <ion-footer-bar align-title="left" class="bar-assertive bar-footer">
+        <div class="buttons">
+            <button class="button" 
+                    ng-click="page.edit = !page.edit">Edit</button>
+        </div>
+        <h1 class="title">Title!</h1>
+        <div class="buttons" ng-click="doSomething()">
+            <button class="button">Save</button>
+        </div>
+    </ion-footer-bar>
 </ion-view>

@@ -119,3 +119,10 @@ and open the template in the editor.
     line-height: 22px;
     color: silver;
 }
+.ace_line {
+    overflow-scroll: true;
+    -moz-user-select: text;
+    -webkit-user-select: text;
+    -ms-user-select: text;
+    user-select:  text;
+}

@@ -2,10 +2,10 @@
     <ion-side-menu-content>
         <ion-nav-bar class="bar-stable">
             <ion-nav-title>
-                
+
                 <span style="   text-decoration: underline;
                       text-decoration-color: {{app.page.current.source.color}};"
-                      ng-click="app.page.edit=true;"
+                      ng-click="app.page.edit = true;"
                       >
                     {{app.page.current.title}}
                 </span>
@@ -27,8 +27,12 @@
             </ion-nav-buttons>
         </ion-nav-bar>
 
-        <ion-nav-view name="pageContent">
-        </ion-nav-view>
+        <div class="body-view">
+            <div ng-if="false" app.wide class="page-wide" >
+                <wikipage pagename="about"></wikipage>
+            </div>
+            <ion-nav-view name="pageContent" style="position: relative;" ></ion-nav-view>
+        </div>
     </ion-side-menu-content>
 
     <ion-side-menu side="right" expose-aside-when="large" class="side-menu">

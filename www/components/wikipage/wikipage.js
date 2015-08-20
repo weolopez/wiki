@@ -8,15 +8,14 @@ angular.module('component.wikipage', [])
         templateUrl: 'components/wikipage/wikipage.html',
         controller: function($log, $location, $storage, $page, $scope, $ionicSideMenuDelegate) {        	
             var page = this;
-            page.page = $page;
             page.location = $location;
             page.storage=$storage;
             page.$ionicSideMenuDelegate=$ionicSideMenuDelegate;
             
-            page.storage.getPage('pages');
+            page.storage.getPage(page.pagename);
             $scope.$watch(function(data) {
-                if ($storage.cachedPages['site']===undefined)return;
-                return $storage.cachedPages['site']['pages'];
+                if ($storage.cachedPages['root']===undefined)return;
+                return $storage.cachedPages['root'][page.pagename];
             }, function(newValue, oldValue) {
                 page.current=newValue;
             });
