@@ -104,8 +104,7 @@ angular.module('component.user', ['firebase'])
         } catch (err) {}     
         
         if (source===user.user.profileProvider) {
-            if (loggedInImage !== undefined) returnIma
-    ge=loggedInImage;
+            if (loggedInImage !== undefined) returnImage=loggedInImage;
         }
         if (source===undefined) {
             if (loggedInImage !== undefined) returnImage=loggedInImage;

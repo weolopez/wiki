@@ -21,6 +21,10 @@
                             'ion-ios-circle-outline':page.page.storyIndex !== $index}"
                        ng-click="page.page.storyIndex = page.componentClicked(page.page.storyIndex, $index); page.page.save();"
                        ></i>
+                    <a ng-href="/scratch.html"
+                       ng-click="page.storage.copy(s);">
+                    <i class="ion-edit"
+                       ></i></a>
                     <h2 contenteditable 
                         on-blur="page.page.save();"
                         ng-model="s.name">
