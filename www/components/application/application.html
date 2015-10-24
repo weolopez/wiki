@@ -91,5 +91,11 @@
                         >{{app.storage.persistance.sources[key].name}}</button>                      
             </div>
         </div>
+ <button class="btn" 
+                        ng-click= "$page.edit=!$page.edit;;"
+                        
+                        style="background-color: yellow"
+                        ng-class="{'active': app.storage.preferedSources === key}"
+                        >{{app.storage.persistance.sources[key].name}}</button>                      
     </ion-side-menu>
 </ion-side-menus>
