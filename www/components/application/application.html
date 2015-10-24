@@ -92,10 +92,10 @@
             </div>
         </div>
  <button class="btn" 
-                        ng-click= "$page.edit=!$page.edit;;"
+                        ng-click= "App.page.edit=!app.page.edit;;"
                         
                         style="background-color: yellow"
                         ng-class="{'active': app.storage.preferedSources === key}"
-                        >{{app.storage.persistance.sources[key].name}}</button>                      
+                        >Edit</button>                      
     </ion-side-menu>
 </ion-side-menus>
